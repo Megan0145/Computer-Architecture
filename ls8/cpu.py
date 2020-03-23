@@ -17,6 +17,14 @@ class CPU:
         # add pc to hold value of the program counter, initialize to 0
         self.pc = 0
 
+        # add dictionary to hold commands and their values in binary to make run function more readable
+        self.instructions = {
+            "HLT": 0b00000001,
+            "LDI": 0b10000010,
+            "PRN": 0b01000111
+        }
+
+
     def ram_read(self, address):
         """should accept the address to read and return the value stored there."""
         return self.ram[address]
@@ -88,20 +96,20 @@ class CPU:
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
 
-            # if IR = 0b00000001, instruction to execute will be HLT...
-            if IR == 0b00000001:
+            # if IR = binary value of HLT command...
+            if IR == self.instructions["HLT"]:
                 # set running to False to exit loop and stop CPU running
                 running = False
 
-            # else if IR = 0b10000010, instruction to execute will be LDI...
-            elif IR == 0b10000010:
+            # else if IR = binary value of LDI command...
+            elif IR == self.instructions["LDI"]:
                 # set register at index of operand_a equal to the value of operand_b
                 self.reg[operand_a] = operand_b
                 # increment program counter by 3
                 self.pc += 3
 
-            # else if IR = 0b01000111, instruction to execute will be PRN...
-            elif IR == 0b01000111:
+            # else if IR = binary value of PRN command...
+            elif IR == self.instructions["PRN"]:
                 # print value of register at index of operand_a
                 print(self.reg[operand_a])
                 # increment program counter by 2
