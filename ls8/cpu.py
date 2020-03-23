@@ -97,7 +97,6 @@ class CPU:
             elif IR == 0b10000010:
                 # set register at index of operand_a equal to the value of operand_b
                 self.reg[operand_a] = operand_b
-                self.trace()
                 # increment program counter by 3
                 self.pc += 3
 
