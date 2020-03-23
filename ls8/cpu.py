@@ -17,9 +17,13 @@ class CPU:
         # add pc to hold value of the program counter, initialize to 0
         self.pc = 0
 
-    """should accept the address to read and return the value stored there."""
     def ram_read(self, address):
+        """should accept the address to read and return the value stored there."""
         return self.ram[address]
+
+    def ram_write(self, address, value):
+        """ should accept a value to write, and the address to write it to"""
+        self.ram[address] = value   
 
     def load(self):
         """Load a program into memory."""
