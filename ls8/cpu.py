@@ -78,7 +78,6 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        
         # read the memory address that’s stored in register PC, and store that result in IR (Instruction Register)
         IR = self.reg[self.pc]
 
@@ -86,3 +85,22 @@ class CPU:
         # and operand_b in case the instruction needs them
         operand_a = self.ram_read(self.pc + 1)
         operand_b = self.ram_read(self.pc + 2)
+
+        # initalise loop to run while 'running' boolean True
+        running = True
+        while running:
+            # get the opcode by calling ram_read() passing in the current value of the program counter 
+            opcode = self.ram_read(self.pc)
+            print(opcode)
+            if opcode == 1:
+                running = False    
+            self.pc += 1
+                
+                
+
+            
+
+
+cpu = CPU()
+cpu.load()
+cpu.run()            
