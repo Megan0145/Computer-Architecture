@@ -21,7 +21,8 @@ class CPU:
         self.instructions = {
             "HLT": 0b00000001,
             "LDI": 0b10000010,
-            "PRN": 0b01000111
+            "PRN": 0b01000111,
+            "MUL": 0b10100010
         }
 
 
@@ -63,7 +64,10 @@ class CPU:
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        #elif op == "SUB": etc
+
+        # set the value of register at index of reg_a equal to the value of reg_a * reg_b    
+        elif op == "MUL": 
+            self.reg[reg_a] *= self.reg[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -116,4 +120,11 @@ class CPU:
                 # print value of register at index of operand_a
                 print(self.reg[operand_a])
                 # increment program counter by 2
-                self.pc += 2    
+                self.pc += 2   
+            
+            # else if IR = binary value of MUL command...
+            elif IR == self.instructions["MUL"]:
+                # pass operand_a and operand_b in alu method with "MUL" as the opcode
+                self.alu("MUL", operand_a, operand_b)
+                # increment the program count by 3
+                self.pc += 3     
