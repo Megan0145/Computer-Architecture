@@ -78,28 +78,36 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        # read the memory address that’s stored in register PC, and store that result in IR (Instruction Register)
-        IR = self.reg[self.pc]
-
-        # Using ram_read(), read the bytes at PC+1 and PC+2 from RAM into variables operand_a 
-        # and operand_b in case the instruction needs them
-        operand_a = self.ram_read(self.pc + 1)
-        operand_b = self.ram_read(self.pc + 2)
-
         # initalise loop to run while 'running' boolean True
         running = True
         while running:
-            # get the opcode by calling ram_read() passing in the current value of the program counter 
-            opcode = self.ram_read(self.pc)
-            print(opcode)
-            if opcode == 1:
-                running = False    
-            self.pc += 1
-                
-                
+            # read the memory address that’s stored in ram at index of PC, and store that result in IR (Instruction Register)
+            IR = self.ram_read(self.pc)
+            # Using ram_read(), read the bytes at PC+1 and PC+2 from RAM into variables operand_a 
+            # and operand_b in case the instruction needs them
+            operand_a = self.ram_read(self.pc + 1)
+            operand_b = self.ram_read(self.pc + 2)
 
+            # if IR = 0b00000001, instruction to execute will be HLT...
+            if IR == 0b00000001:
+                # set running to False to exit loop and stop CPU running
+                running = False
+
+            # else if IR = 0b10000010, instruction to execute will be LDI...
+            elif IR == 0b10000010:
+                # set register at index of operand_a equal to the value of operand_b
+                self.reg[operand_a] = operand_b
+                self.trace()
+                # increment program counter by 3
+                self.pc += 3
+
+            # else if IR = 0b01000111, instruction to execute will be PRN...
+            elif IR == 0b01000111:
+                # print value of register at index of operand_a
+                print(self.reg[operand_a])
+                # increment program counter by 2
+                self.pc += 2    
             
-
 
 cpu = CPU()
 cpu.load()
