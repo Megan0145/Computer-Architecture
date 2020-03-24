@@ -42,6 +42,10 @@ class CPU:
         address = 0
         # try to open file passed in command line
         try:
+            # Print error and usage statement if length of argv != 2 (no file has been provided to extract instructions to process in the CPU)
+            if len(sys.argv) != 2:
+                print("Invalid number of arguments. Usage: python ls8.py examples/<filename>")
+                sys.exit(1)
             # set executable file equal to the last argument in sys.argv
             executable = sys.argv[1]
             # open executable and save to 'file' variable            
@@ -61,7 +65,7 @@ class CPU:
         # if this fails and the user has entered the name of a file that doesn't exist (a FileNotFoundError is thrown)..
         except FileNotFoundError:
             # print error message and usage statement
-            print("File not found. Usage: python ls8.py examples/filename") 
+            print("File not found. Usage: python ls8.py examples/<filename>") 
             # exit
             sys.exit(1)
 
