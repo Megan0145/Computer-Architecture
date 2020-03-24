@@ -93,7 +93,7 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        # initalise loop to run while 'running' boolean True
+        # initialize loop to run while 'running' boolean True
         running = True
         while running:
             # read the memory address that’s stored in ram at index of PC, and store that result in IR (Instruction Register)
@@ -113,18 +113,21 @@ class CPU:
                 # set register at index of operand_a equal to the value of operand_b
                 self.reg[operand_a] = operand_b
                 # increment program counter by 3
-                self.pc += 3
+                # self.pc += 3     
+                self.pc += (self.instructions["LDI"] >> 6) + 0b00000001
 
             # else if IR = binary value of PRN command...
             elif IR == self.instructions["PRN"]:
                 # print value of register at index of operand_a
                 print(self.reg[operand_a])
                 # increment program counter by 2
-                self.pc += 2   
+                # self.pc += 2   
+                self.pc += (self.instructions["PRN"] >> 6) + 0b00000001    
             
             # else if IR = binary value of MUL command...
             elif IR == self.instructions["MUL"]:
                 # pass operand_a and operand_b in alu method with "MUL" as the opcode
                 self.alu("MUL", operand_a, operand_b)
                 # increment the program count by 3
-                self.pc += 3     
+                # self.pc += 3     
+                self.pc += (self.instructions["MUL"] >> 6) + 0b00000001           
