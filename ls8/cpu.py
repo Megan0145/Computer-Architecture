@@ -117,16 +117,12 @@ class CPU:
         operand_b = self.ram_read(self.pc + 2)
         # set register at index of operand_a equal to the value of operand_b
         self.reg[operand_a] = operand_b
-        # increment program counter by 3
-        self.pc += 3
 
     def prn(self):
         # Using ram_read(), read the bytes at PC+1 RAM into variable operand_a 
         operand_a = self.ram_read(self.pc + 1) 
         # print value of register at index of operand_a
         print(self.reg[operand_a])
-        # increment program counter by 2  
-        self.pc += 2 
 
     def mul(self):
         # Using ram_read(), read the bytes at PC+1 and PC+2 from RAM into variables operand_a and operand_b
@@ -134,8 +130,6 @@ class CPU:
         operand_b = self.ram_read(self.pc + 2)
         # pass operand_a and operand_b in alu method with "MUL" as the opcode
         self.alu("MUL", operand_a, operand_b)
-        # increment program counter by 3
-        self.pc += 3
 
     def run(self):
         """Run the CPU."""
@@ -144,3 +138,5 @@ class CPU:
             IR = self.ram_read(self.pc)
             # execute the function within the brachtable at the index of the instruction within the instruction table at the index of IR
             self.branchtable[self.instructions[IR]]()   
+            # increment program counter by the value of the last two digits in IR + 1
+            self.pc += (IR >> 6) + 0b00000001
