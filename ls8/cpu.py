@@ -39,25 +39,31 @@ class CPU:
 
     def load(self):
         """Load a program into memory."""
-
         address = 0
-        # set executable file equal to the last argument in sys.argv
-        executable = sys.argv[-1]
-        # open executable and save to 'file' variable            
-        with open(executable, "r") as file:
-            # loop over every line in the file
-            for line in file:
-                # if the first character of the line == '0' or '1'...
-                if line[0] == '0' or line[0] == '1':
-                    # split the line at '#' character to remove comments so that we can just grab the value at the zeroth index of the split line
-                    num = line.split('#')[0]
-                    # convert to a base-2 int
-                    instruction = int(num, 2)
-                    # set the value of ram at index of current value of address = instruction
-                    self.ram[address] = instruction
-                    # increment the value of address by 1
-                    address += 1         
-            
+        # try to open file passed in command line
+        try:
+            # set executable file equal to the last argument in sys.argv
+            executable = sys.argv[1]
+            # open executable and save to 'file' variable            
+            with open(executable, "r") as file:
+                # loop over every line in the file
+                for line in file:
+                    # if the first character of the line == '0' or '1'...
+                    if line[0] == '0' or line[0] == '1':
+                        # split the line at '#' character to remove comments so that we can just grab the value at the zeroth index of the split line
+                        num = line.split('#')[0]
+                        # convert to a base-2 int
+                        instruction = int(num, 2)
+                        # set the value of ram at index of current value of address = instruction
+                        self.ram[address] = instruction
+                        # increment the value of address by 1
+                        address += 1         
+        # if this fails and the user has entered the name of a file that doesn't exist (a FileNotFoundError is thrown)..
+        except FileNotFoundError:
+            # print error message and usage statement
+            print("File not found. Usage: python ls8.py examples/filename") 
+            # exit
+            sys.exit(1)
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
