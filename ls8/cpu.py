@@ -17,24 +17,30 @@ class CPU:
         # add pc to hold value of the program counter, initialize to 0
         self.pc = 0
 
-        # add dictionary to hold commands and their values in binary to make run function more readable
+        # boolean to track whether CPU is running or not, initialize to True
+        self.running = True
+
+        # add dictionary to hold commands and their values in binary 
         self.instructions = {
-            "HLT": 0b00000001,
-            "LDI": 0b10000010,
-            "PRN": 0b01000111,
-            "MUL": 0b10100010
+            0b00000001: "HLT",
+            0b10000010: "LDI",
+            0b01000111: "PRN",
+            0b10100010: "MUL"
         }
 
+        self.branchtable = {
+            "HLT": self.halt,
+            "LDI": self.ldi,
+            "PRN": self.prn,
+            "MUL": self.mul
+        }
 
     def ram_read(self, MAR):
-        """should accept the address to read and return the value stored there."""
-        # MAR : Memory Address Register - contains the address that's being read
+        # accepts MAR as the address to read (Memory Address Register) and returns the value stored there
         return self.ram[MAR]
 
     def ram_write(self, MAR, MDR):
-        """ should accept a value to write, and the address to write it to"""
-        # MAR : Memory Address Register - contains the address that's being read
-        # MDR : Memory Data Register - contains the data to write
+        # accepts MAR (Memory Address Register) as the address to write to and sets its value to MDR (Memory Data Register)
         self.ram[MAR] = MDR   
 
     def load(self):
@@ -55,7 +61,7 @@ class CPU:
                     # if the first character of the line == '0' or '1'...
                     if line[0] == '0' or line[0] == '1':
                         # split the line at '#' character to remove comments so that we can just grab the value at the zeroth index of the split line
-                        num = line.split('#')[0]
+                        num = line.split('#')[0].strip()
                         # convert to a base-2 int
                         instruction = int(num, 2)
                         # set the value of ram at index of current value of address = instruction
@@ -101,43 +107,40 @@ class CPU:
 
         print()
 
+    def halt(self): 
+        # set running to False to exit loop and stop CPU running
+        self.running = False
+
+    def ldi(self):
+        # Using ram_read(), read the bytes at PC+1 and PC+2 from RAM into variables operand_a and operand_b
+        operand_a = self.ram_read(self.pc + 1)
+        operand_b = self.ram_read(self.pc + 2)
+        # set register at index of operand_a equal to the value of operand_b
+        self.reg[operand_a] = operand_b
+        # increment program counter by 3
+        self.pc += 3
+
+    def prn(self):
+        # Using ram_read(), read the bytes at PC+1 RAM into variable operand_a 
+        operand_a = self.ram_read(self.pc + 1) 
+        # print value of register at index of operand_a
+        print(self.reg[operand_a])
+        # increment program counter by 2  
+        self.pc += 2 
+
+    def mul(self):
+        # Using ram_read(), read the bytes at PC+1 and PC+2 from RAM into variables operand_a and operand_b
+        operand_a = self.ram_read(self.pc + 1)
+        operand_b = self.ram_read(self.pc + 2)
+        # pass operand_a and operand_b in alu method with "MUL" as the opcode
+        self.alu("MUL", operand_a, operand_b)
+        # increment program counter by 3
+        self.pc += 3
+
     def run(self):
         """Run the CPU."""
-        # initialize loop to run while 'running' boolean True
-        running = True
-        while running:
+        while self.running:
             # read the memory address that’s stored in ram at index of PC, and store that result in IR (Instruction Register)
             IR = self.ram_read(self.pc)
-            # Using ram_read(), read the bytes at PC+1 and PC+2 from RAM into variables operand_a 
-            # and operand_b in case the instruction needs them
-            operand_a = self.ram_read(self.pc + 1)
-            operand_b = self.ram_read(self.pc + 2)
-
-            # if IR = binary value of HLT command...
-            if IR == self.instructions["HLT"]:
-                # set running to False to exit loop and stop CPU running
-                running = False
-
-            # else if IR = binary value of LDI command...
-            elif IR == self.instructions["LDI"]:
-                # set register at index of operand_a equal to the value of operand_b
-                self.reg[operand_a] = operand_b
-                # increment program counter by 3
-                # self.pc += 3     
-                self.pc += (self.instructions["LDI"] >> 6) + 0b00000001
-
-            # else if IR = binary value of PRN command...
-            elif IR == self.instructions["PRN"]:
-                # print value of register at index of operand_a
-                print(self.reg[operand_a])
-                # increment program counter by 2
-                # self.pc += 2   
-                self.pc += (self.instructions["PRN"] >> 6) + 0b00000001    
-            
-            # else if IR = binary value of MUL command...
-            elif IR == self.instructions["MUL"]:
-                # pass operand_a and operand_b in alu method with "MUL" as the opcode
-                self.alu("MUL", operand_a, operand_b)
-                # increment the program count by 3
-                # self.pc += 3     
-                self.pc += (self.instructions["MUL"] >> 6) + 0b00000001           
+            # execute the function within the brachtable at the index of the instruction within the instruction table at the index of IR
+            self.branchtable[self.instructions[IR]]()   
