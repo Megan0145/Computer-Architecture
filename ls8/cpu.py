@@ -17,6 +17,9 @@ class CPU:
         # add pc to hold value of the program counter, initialize to 0
         self.pc = 0
 
+        # add stack pointer internal register
+        self.sp = 0
+
         # boolean to track whether CPU is running or not, initialize to True
         self.running = True
 
