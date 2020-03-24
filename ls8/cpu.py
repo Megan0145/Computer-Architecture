@@ -20,6 +20,10 @@ class CPU:
         # boolean to track whether CPU is running or not, initialize to True
         self.running = True
 
+        # variables that will be used to hold the bytes at PC+1 and PC+2 in RAM while cpu is running
+        self.operand_a = None
+        self.operand_b = None
+
         # add dictionary to hold commands and their values in binary 
         self.instructions = {
             0b00000001: "HLT",
@@ -28,6 +32,7 @@ class CPU:
             0b10100010: "MUL"
         }
 
+        # add branchtable to link commands with functions to execute while cpu running
         self.branchtable = {
             "HLT": self.halt,
             "LDI": self.ldi,
@@ -112,31 +117,29 @@ class CPU:
         self.running = False
 
     def ldi(self):
-        # Using ram_read(), read the bytes at PC+1 and PC+2 from RAM into variables operand_a and operand_b
-        operand_a = self.ram_read(self.pc + 1)
-        operand_b = self.ram_read(self.pc + 2)
         # set register at index of operand_a equal to the value of operand_b
-        self.reg[operand_a] = operand_b
+        self.reg[self.operand_a] = self.operand_b
 
     def prn(self):
-        # Using ram_read(), read the bytes at PC+1 RAM into variable operand_a 
-        operand_a = self.ram_read(self.pc + 1) 
         # print value of register at index of operand_a
-        print(self.reg[operand_a])
+        print(self.reg[self.operand_a])
 
     def mul(self):
-        # Using ram_read(), read the bytes at PC+1 and PC+2 from RAM into variables operand_a and operand_b
-        operand_a = self.ram_read(self.pc + 1)
-        operand_b = self.ram_read(self.pc + 2)
         # pass operand_a and operand_b in alu method with "MUL" as the opcode
-        self.alu("MUL", operand_a, operand_b)
+        self.alu("MUL", self.operand_a, self.operand_b)
 
     def run(self):
         """Run the CPU."""
         while self.running:
             # read the memory address that’s stored in ram at index of PC, and store that result in IR (Instruction Register)
             IR = self.ram_read(self.pc)
+
+            # Using ram_read(), read the bytes at PC+1 and PC+2 from RAM into variables operand_a and operand_b
+            self.operand_a = self.ram_read(self.pc + 1)
+            self.operand_b = self.ram_read(self.pc + 2)
+
             # execute the function within the brachtable at the index of the instruction within the instruction table at the index of IR
             self.branchtable[self.instructions[IR]]()   
+
             # increment program counter by the value of the last two digits in IR + 1
             self.pc += (IR >> 6) + 0b00000001
