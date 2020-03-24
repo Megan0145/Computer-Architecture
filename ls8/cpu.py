@@ -32,7 +32,9 @@ class CPU:
             0b00000001: "HLT",
             0b10000010: "LDI",
             0b01000111: "PRN",
-            0b10100010: "MUL"
+            0b10100010: "MUL",
+            0b01000101: "PUSH",
+            0b01000110: "POP"
         }
 
         # add branchtable to link commands with functions to execute while cpu running
