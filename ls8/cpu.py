@@ -138,8 +138,8 @@ class CPU:
             self.operand_a = self.ram_read(self.pc + 1)
             self.operand_b = self.ram_read(self.pc + 2)
 
-            # execute the function within the brachtable at the index of the instruction within the instruction table at the index of IR
+            # execute the function within the brachtable at the index of the command within the instruction table at the index of IR
             self.branchtable[self.instructions[IR]]()   
 
-            # increment program counter by the value of the last two digits in IR + 1
+            # increment program counter by the value of the first two digits in IR + 1
             self.pc += (IR >> 6) + 0b00000001
