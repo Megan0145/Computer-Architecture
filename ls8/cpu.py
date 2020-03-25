@@ -153,6 +153,7 @@ class CPU:
             # read the memory address that’s stored in ram at index of PC, and store that result in IR (Instruction Register)
             IR = self.ram_read(self.pc)
 
+            # value of stack pointer will always be the value stored at register 7
             self.sp = self.reg[7]
 
             # Using ram_read(), read the bytes at PC+1 and PC+2 from RAM into variables operand_a and operand_b
