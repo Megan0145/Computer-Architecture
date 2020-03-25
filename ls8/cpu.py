@@ -18,7 +18,7 @@ class CPU:
         self.pc = 0
 
         # add stack pointer internal register set to the value of R7
-        self.sp = self.reg[7]
+        self.sp = 0
 
         # boolean to track whether CPU is running or not, initialize to True
         self.running = True
@@ -79,7 +79,9 @@ class CPU:
                         # set the value of ram at index of current value of address = instruction
                         self.ram[address] = instruction
                         # increment the value of address by 1
-                        address += 1         
+                        address += 1       
+            # set R7 equal to 0xf4 (this will be initial value of sp)            
+            self.reg[7] = 0xf4              
         # if this fails and the user has entered the name of a file that doesn't exist (a FileNotFoundError is thrown)..
         except FileNotFoundError:
             # print error message and usage statement
@@ -136,16 +138,22 @@ class CPU:
         self.alu("MUL", self.operand_a, self.operand_b)
 
     def push(self):
-        pass   
+        print(f"Push. SP: {hex(self.sp)}. Decrement: {hex(self.sp - 1)}")
+        print("")
+        # pass   
 
     def pop(self):
-        pass
+        print(f"Pop. SP: {hex(self.sp)}. Increment: {hex(self.sp + 1)}")
+        print("")
+        # pass
 
     def run(self):
         """Run the CPU."""
         while self.running:
             # read the memory address that’s stored in ram at index of PC, and store that result in IR (Instruction Register)
             IR = self.ram_read(self.pc)
+
+            self.sp = self.reg[7]
 
             # Using ram_read(), read the bytes at PC+1 and PC+2 from RAM into variables operand_a and operand_b
             self.operand_a = self.ram_read(self.pc + 1)
