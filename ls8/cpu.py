@@ -38,7 +38,8 @@ class CPU:
             0b10100010: "MUL",
             0b01000101: "PUSH",
             0b01000110: "POP",
-            0b00000101: "PRINT_REG"
+            0b01010000: "CALL",
+            0b00010001: "RET"
         }
 
         # add branchtable to link commands with functions to execute while cpu running
@@ -49,7 +50,8 @@ class CPU:
             "MUL": self.mul,
             "PUSH": self.push,
             "POP": self.pop,
-            "PRINT_REG": self.print_reg
+            "CALL": self.call,
+            "RET": self.ret
         }
 
     def ram_read(self, MAR):
@@ -160,6 +162,12 @@ class CPU:
         self.reg[self.operand_a] = val
         # increment value of register at index 7
         self.reg[7] += 0x1
+
+    def call(self):
+        pass
+    
+    def ret(self):
+        pass
 
     def run(self):
         """Run the CPU."""
