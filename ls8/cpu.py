@@ -14,10 +14,13 @@ class CPU:
         # add reg to hold 8 general-purpose registers
         self.reg = [0] * 8
 
+        # set R7 equal to 0xf4 (this will be initial value of sp)            
+        self.reg[7] = 0xf4  
+
         # add pc to hold value of the program counter, initialize to 0
         self.pc = 0
 
-        # add stack pointer internal register set to the value of R7
+        # add stack pointer internal register, initialize to 0
         self.sp = 0
 
         # boolean to track whether CPU is running or not, initialize to True
@@ -79,9 +82,7 @@ class CPU:
                         # set the value of ram at index of current value of address = instruction
                         self.ram[address] = instruction
                         # increment the value of address by 1
-                        address += 1       
-            # set R7 equal to 0xf4 (this will be initial value of sp)            
-            self.reg[7] = 0xf4              
+                        address += 1                   
         # if this fails and the user has entered the name of a file that doesn't exist (a FileNotFoundError is thrown)..
         except FileNotFoundError:
             # print error message and usage statement
@@ -138,12 +139,16 @@ class CPU:
         self.alu("MUL", self.operand_a, self.operand_b)
 
     def push(self):
-        print(f"Push. SP: {hex(self.sp)}. Decrement: {hex(self.sp - 1)}")
-        print("")
-        # pass   
+        # decrement value of register at index 7
+        self.reg[7] -= 0x1
+        # set the sp equal to the value at register 7
+        self.sp = self.reg[7]
+        # set value in ram at index of stack pointer equal to the value stored in register at index of program counter + 1 (operand_a)
+        self.ram_write(self.sp, self.reg[self.operand_a])
+        print(f'value in ram at index of sp: {self.ram_read(self.sp)}. value of sp: {hex(self.sp)}')
 
     def pop(self):
-        print(f"Pop. SP: {hex(self.sp)}. Increment: {hex(self.sp + 1)}")
+        print(f"Pop. SP: {hex(self.sp)}. Increment: {hex(self.sp + 0x1)}")
         print("")
         # pass
 
@@ -152,9 +157,6 @@ class CPU:
         while self.running:
             # read the memory address that’s stored in ram at index of PC, and store that result in IR (Instruction Register)
             IR = self.ram_read(self.pc)
-
-            # value of stack pointer will always be the value stored at register 7
-            self.sp = self.reg[7]
 
             # Using ram_read(), read the bytes at PC+1 and PC+2 from RAM into variables operand_a and operand_b
             self.operand_a = self.ram_read(self.pc + 1)
