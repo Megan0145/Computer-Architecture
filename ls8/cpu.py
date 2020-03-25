@@ -37,7 +37,8 @@ class CPU:
             0b01000111: "PRN",
             0b10100010: "MUL",
             0b01000101: "PUSH",
-            0b01000110: "POP"
+            0b01000110: "POP",
+            0b00000101: "PRINT_REG"
         }
 
         # add branchtable to link commands with functions to execute while cpu running
@@ -47,16 +48,20 @@ class CPU:
             "PRN": self.prn,
             "MUL": self.mul,
             "PUSH": self.push,
-            "POP": self.pop
+            "POP": self.pop,
+            "PRINT_REG": self.print_reg
         }
 
     def ram_read(self, MAR):
         # accepts MAR as the address to read (Memory Address Register) and returns the value stored there
         return self.ram[MAR]
 
+    def print_reg(self):
+        print(self.reg)
+
     def ram_write(self, MAR, MDR):
         # accepts MAR (Memory Address Register) as the address to write to and sets its value to MDR (Memory Data Register)
-        self.ram[MAR] = MDR   
+        self.ram[MAR] = MDR     
 
     def load(self):
         """Load a program into memory."""
@@ -145,12 +150,16 @@ class CPU:
         self.sp = self.reg[7]
         # set value in ram at index of stack pointer equal to the value stored in register at index of program counter + 1 (operand_a)
         self.ram_write(self.sp, self.reg[self.operand_a])
-        print(f'value in ram at index of sp: {self.ram_read(self.sp)}. value of sp: {hex(self.sp)}')
 
     def pop(self):
-        print(f"Pop. SP: {hex(self.sp)}. Increment: {hex(self.sp + 0x1)}")
-        print("")
-        # pass
+        # set the sp equal to the value at register 7
+        self.sp = self.reg[7]
+        # read value in ram at index of sp into variable
+        val = self.ram_read(self.sp)
+        # set value of register at index of operand_a equal to value
+        self.reg[self.operand_a] = val
+        # increment value of register at index 7
+        self.reg[7] += 0x1
 
     def run(self):
         """Run the CPU."""
