@@ -17,8 +17,8 @@ class CPU:
         # add pc to hold value of the program counter, initialize to 0
         self.pc = 0
 
-        # add stack pointer internal register
-        self.sp = 0
+        # add stack pointer internal register set to the value of R7
+        self.sp = self.reg[7]
 
         # boolean to track whether CPU is running or not, initialize to True
         self.running = True
@@ -42,7 +42,9 @@ class CPU:
             "HLT": self.halt,
             "LDI": self.ldi,
             "PRN": self.prn,
-            "MUL": self.mul
+            "MUL": self.mul,
+            "PUSH": self.push,
+            "POP": self.pop
         }
 
     def ram_read(self, MAR):
@@ -132,6 +134,12 @@ class CPU:
     def mul(self):
         # pass operand_a and operand_b in alu method with "MUL" as the opcode
         self.alu("MUL", self.operand_a, self.operand_b)
+
+    def push(self):
+        pass   
+
+    def pop(self):
+        pass
 
     def run(self):
         """Run the CPU."""
