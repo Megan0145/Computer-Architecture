@@ -35,6 +35,7 @@ class CPU:
             0b00000001: "HLT",
             0b10000010: "LDI",
             0b01000111: "PRN",
+            0b10100000: "ADD",
             0b10100010: "MUL",
             0b01000101: "PUSH",
             0b01000110: "POP",
@@ -48,6 +49,7 @@ class CPU:
             "LDI": self.ldi,
             "PRN": self.prn,
             "MUL": self.mul,
+            "ADD": self.add,
             "PUSH": self.push,
             "POP": self.pop,
             "CALL": self.call,
@@ -145,6 +147,10 @@ class CPU:
         # pass operand_a and operand_b in alu method with "MUL" as the opcode
         self.alu("MUL", self.operand_a, self.operand_b)
 
+    def add(self):
+        # pass operand_a and operand_b in alu method with "MUL" as the opcode
+        self.alu("ADD", self.operand_a, self.operand_b)
+
     def push(self):
         # decrement value of register at index 7
         self.reg[7] -= 0x1
@@ -164,10 +170,20 @@ class CPU:
         self.reg[7] += 0x1
 
     def call(self):
+        # # push current value of pc to stack
+        # self.reg[7] -= 0x1
+        # self.sp = self.reg[7]
+        # self.ram_write(self.sp, self.pc)
+        
+        # # set the pc equal to the value in register at index of operand_a
+        # print(self.ram[self.reg[self.operand_a]] == 0b10100000)
+
+        # # print(f'r1: {self.reg[1]}')
+        # # print(self.reg[self.operand_a])
         pass
-    
+
     def ret(self):
-        pass
+        print('BLA')
 
     def run(self):
         """Run the CPU."""
