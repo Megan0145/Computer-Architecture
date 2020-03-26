@@ -212,8 +212,10 @@ class CPU:
             self.operand_a = self.ram_read(self.pc + 1)
             self.operand_b = self.ram_read(self.pc + 2)
 
-            # execute the function within the brachtable at the index of the command within the instruction table at the index of IR
-            self.branchtable[self.instructions[IR]]()   
+            # get the command of the instruction to execute by getting the value in the instructions dictionary at the index of the instruction register (eg "PRN" or "HLT" etc..)
+            instruction = self.instructions[IR]
+            # execute the function within the branchtable at the index of the command 
+            self.branchtable[instruction]()   
 
             # increment program counter by the value of the first two digits in IR + 1
             self.pc += (IR >> 6) + 0b00000001
