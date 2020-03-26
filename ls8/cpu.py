@@ -23,6 +23,9 @@ class CPU:
         # add stack pointer internal register, initialize to 0
         self.sp = 0
 
+        # add flag initialized to 0
+        self.FL = 0b00000000
+
         # boolean to track whether CPU is running or not, initialize to True
         self.running = True
 
@@ -56,7 +59,9 @@ class CPU:
             # JMP
             0b01010100: {"function" : self.jump, "increment": False},
             # ST
-            0b10000100: {"function" : self.st, "increment": True}
+            0b10000100: {"function" : self.st, "increment": True},
+            # CMP
+            0b10100111: {"function" : self.compare, "increment": True}
         }
 
     def ram_read(self, MAR):
@@ -146,7 +151,7 @@ class CPU:
     def pra(self):
         # print ASCII value of register at index of operand_a
         print(chr(self.reg[self.operand_a]))
-        
+
     def mul(self):
         # pass operand_a and operand_b in alu method with "MUL" as the opcode
         self.alu("MUL", self.operand_a, self.operand_b)
@@ -203,6 +208,20 @@ class CPU:
         address = self.reg[self.operand_a]
         # set value in ram at adrress equal to value
         self.ram_write(address, val)
+
+    def compare(self):
+        """        
+        Compare the values in two registers.
+
+        * If they are equal, set the Equal `E` flag to 1, otherwise set it to 0.
+
+        * If registerA is less than registerB, set the Less-than `L` flag to 1,
+        otherwise set it to 0.
+
+        * If registerA is greater than registerB, set the Greater-than `G` flag
+        to 1, otherwise set it to 0. 
+        """
+        pass   
 
     def run(self):
         """Run the CPU."""
