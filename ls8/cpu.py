@@ -63,6 +63,8 @@ class CPU:
             0b10100111: self.compare,
             # AND
             0b10101000: self.bit_and,
+            # OR
+            0b10101010: self.bit_or,
 
             # PC MUTATORS:
             # CALL
@@ -147,9 +149,12 @@ class CPU:
             # convert string to integer base 2 and set the flag equal to it
             self.FL = int(flag_string, 2)
 
-            # print(f'{self.FL:08b}')
         elif op == "BIT-AND":
-            self.reg[reg_a] = int(self.reg[reg_a] & self.reg[reg_b])
+            self.reg[reg_a] = self.reg[reg_a] & self.reg[reg_b]
+
+        elif op == "BIT-OR":
+            self.reg[reg_a] = self.reg[reg_a] | self.reg[reg_b]
+
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -199,6 +204,9 @@ class CPU:
 
     def bit_and(self):
         self.alu("BIT-AND", self.operand_a, self.operand_b)
+
+    def bit_or(self):
+        self.alu("BIT-OR", self.operand_a, self.operand_b)
 
     def push(self):
         # decrement value of register at index 7
