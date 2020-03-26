@@ -30,34 +30,31 @@ class CPU:
         self.operand_a = None
         self.operand_b = None
 
-        # add dictionary to hold commands and their values in binary 
-        self.instructions = {
-            0b00000001: "HLT",
-            0b10000010: "LDI",
-            0b01000111: "PRN",
-            0b10100000: "ADD",
-            0b10100010: "MUL",
-            0b01000101: "PUSH",
-            0b01000110: "POP",
-            0b01010000: "CALL",
-            0b00010001: "RET",
-            0b01010100: "JMP",
-            0b10000100: "ST"
-        }
-
-        # add branchtable to link commands with functions to execute while cpu running
+        # add branchtable to link binary values of instructions with functions to execute while cpu running 
+        # and whether/not the program counter will need to be altered after the function is executed
         self.branchtable = {
-            "HLT": self.halt,
-            "LDI": self.ldi,
-            "PRN": self.prn,
-            "MUL": self.mul,
-            "ADD": self.add,
-            "PUSH": self.push,
-            "POP": self.pop,
-            "CALL": self.call,
-            "RET": self.ret,
-            "JMP": self.jump,
-            "ST": self.st
+            # HLT
+            0b00000001: {"function" : self.halt, "increment": False},
+            # LDI
+            0b10000010: {"function" : self.ldi, "increment": True},
+            # PRN
+            0b01000111: {"function" : self.prn, "increment": True},
+            # ADD 
+            0b10100000: {"function" : self.add, "increment": True},
+            # MUL
+            0b10100010: {"function" : self.mul, "increment": True},
+            # PUSH
+            0b01000101: {"function" : self.push, "increment": True},
+            # POP
+            0b01000110: {"function" : self.pop, "increment": True},
+            # CALL
+            0b01010000: {"function" : self.call, "increment": False},
+            # RET
+            0b00010001: {"function" : self.ret, "increment": False},
+            # JMP
+            0b01010100: {"function" : self.jump, "increment": True},
+            # ST
+            0b10000100: {"function" : self.st, "increment": True}
         }
 
     def ram_read(self, MAR):
@@ -176,16 +173,15 @@ class CPU:
         self.reg[7] -= 0x1
         self.sp = self.reg[7]
         self.ram_write(self.sp, (self.pc + 2))        
-        # set the pc equal to the value in register at index of operand_a - 2
-        # (has to be minus 2 because the run function itself will add 2 to program counter after it executes call function)
-        self.pc = (self.reg[self.operand_a]) - 2
+        # set the pc equal to the value in register at index of operand_a 
+        self.pc = (self.reg[self.operand_a]) 
 
     def ret(self):
         # grab the value from top of stack
         self.sp = self.reg[7]
         val = self.ram_read(self.sp)
-        # set the program counter equal to the value minus one (because run function will add 1 to pc after ret is finished executing)
-        self.pc = val - 1
+        # set the program counter equal to the value 
+        self.pc = val 
         # increment sp
         self.reg[7] += 0x1
 
@@ -212,10 +208,10 @@ class CPU:
             self.operand_a = self.ram_read(self.pc + 1)
             self.operand_b = self.ram_read(self.pc + 2)
 
-            # get the command of the instruction to execute by getting the value in the instructions dictionary at the index of the instruction register (eg "PRN" or "HLT" etc..)
-            instruction = self.instructions[IR]
-            # execute the function within the branchtable at the index of the command 
-            self.branchtable[instruction]()   
+            # execute the function within the branchtable at the index of IR
+            self.branchtable[IR]["function"]()   
 
-            # increment program counter by the value of the first two digits in IR + 1
-            self.pc += (IR >> 6) + 0b00000001
+            # if the program counter needs to be altered..
+            if self.branchtable[IR]["increment"] is True:
+                # increment by the value of the first two digits in IR + 1
+                self.pc += (IR >> 6) + 0b00000001
