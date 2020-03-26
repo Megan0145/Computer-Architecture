@@ -79,6 +79,8 @@ class CPU:
             0b01010111: {"function": self.jgt, "increment": False},
             # JLE
             0b01011001: {"function": self.jle, "increment": False}
+            # JLT
+            0b01011000: {"function": self.jlt, "increment": False}
         }
 
     def ram_read(self, MAR):
@@ -287,7 +289,7 @@ class CPU:
         else:
             self.pc += 2 
 
-    def jgt(self):        
+    def jgt(self):
         # If `greater-than` flag is set (true), jump to the address stored in the given register.
         # get 8-bit string of flag
         flag_str = f'{self.FL:08b}'
@@ -311,7 +313,20 @@ class CPU:
             self.jump()
         # else continue program    
         else:
-            self.pc += 2              
+            self.pc += 2   
+
+    def jlt(self):
+        # If `less-than` flag is set (true), jump to the address stored in the given register.
+        # get 8-bit string of flag
+        flag_str = f'{self.FL:08b}'
+        # the less-than flag will be the second last value of the flag_str
+        # check if second-last character in flag_str is 1...
+        if flag_str[-3] == '1':
+            # if so, jump
+            self.jump()
+        # else continue program    
+        else:
+            self.pc += 2                      
 
     def run(self):
         """Run the CPU."""
