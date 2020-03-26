@@ -23,6 +23,11 @@ class CPU:
         # add stack pointer internal register, initialize to 0
         self.sp = 0
 
+        # IS to hold value of interrupt status
+        self.IS = 0
+        # IM to hold value of interrupt mask
+        self.IM = 0
+
         # add flag initialized to 0
         self.FL = 0b00000000
 
