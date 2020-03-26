@@ -41,7 +41,8 @@ class CPU:
             0b01000110: "POP",
             0b01010000: "CALL",
             0b00010001: "RET",
-            0b01010100: "JMP"
+            0b01010100: "JMP",
+            0b10000100: "ST"
         }
 
         # add branchtable to link commands with functions to execute while cpu running
@@ -55,15 +56,13 @@ class CPU:
             "POP": self.pop,
             "CALL": self.call,
             "RET": self.ret,
-            "JMP": self.jump
+            "JMP": self.jump,
+            "ST": self.st
         }
 
     def ram_read(self, MAR):
         # accepts MAR as the address to read (Memory Address Register) and returns the value stored there
         return self.ram[MAR]
-
-    def print_reg(self):
-        print(self.reg)
 
     def ram_write(self, MAR, MDR):
         # accepts MAR (Memory Address Register) as the address to write to and sets its value to MDR (Memory Data Register)
@@ -193,6 +192,15 @@ class CPU:
     def jump(self):
         # set the value of pc equal to the value of register at index of operand_a minus 2 (run function will add 2 when function finished executing)
         self.pc = (self.reg[self.operand_a]) - 2    
+
+    def st(self):
+        # Store value in registerB in the address stored in registerA.
+        # set val equal to the value stored in register at index of operand b
+        val = self.reg[self.operand_b]
+        # set address equal to the value stored in register at index of operand a
+        address = self.reg[self.operand_a]
+        # set value in ram at adrress equal to value
+        self.ram_write(address, val)
 
     def run(self):
         """Run the CPU."""
