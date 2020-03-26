@@ -342,6 +342,7 @@ class CPU:
             self.branchtable[IR]()   
 
             # if the program counter needs to be altered..
+            # use bitwise AND and bitshift result to the right by 4 bits, if not equal to 1 ...
             if (IR & 0b00010000) >> 4 != 0b00000001:
                 # increment by the value of the first two digits in IR + 1
                 self.pc += (IR >> 6) + 0b00000001
