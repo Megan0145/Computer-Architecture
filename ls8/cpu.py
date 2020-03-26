@@ -65,7 +65,9 @@ class CPU:
             # JEQ
             0b01010101: {"function" : self.jeq, "increment": False},
             # JNE
-            0b01010110: {"function" : self.jne, "increment": False}
+            0b01010110: {"function" : self.jne, "increment": False},
+            # JGE
+            0b01011010: {"function" : self.jge, "increment": False}
         }
 
     def ram_read(self, MAR):
@@ -259,7 +261,20 @@ class CPU:
             self.jump()
         # else continue program    
         else:
-            self.pc += 2            
+            self.pc += 2          
+
+    def jge(self):
+        # If `greater-than` flag or `equal` flag is set (true), jump to the address stored in the given register.
+        # get 8-bit string of flag
+        flag_str = f'{self.FL:08b}'
+        # the greater-than flag will be the second last value of the flag_str and the equal flag will be the last value of the flag_str ->
+        # check if last or second-last character in flag_str is 1...
+        if flag_str[-2] or flag_str[-1] == '1':
+            # if so, jump
+            self.jump()
+        # else continue program    
+        else:
+            self.pc += 2 
 
     def run(self):
         """Run the CPU."""
