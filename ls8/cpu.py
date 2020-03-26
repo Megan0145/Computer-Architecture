@@ -43,7 +43,7 @@ class CPU:
             # PRN
             0b01000111: {"function" : self.prn, "increment": True},
             # PRA
-            0b01001000 : {"function" : self.pra, "increment": True}
+            0b01001000 : {"function" : self.pra, "increment": True},
             # ADD 
             0b10100000: {"function" : self.add, "increment": True},
             # MUL
@@ -113,6 +113,20 @@ class CPU:
         # set the value of register at index of reg_a equal to the value of reg_a * reg_b    
         elif op == "MUL": 
             self.reg[reg_a] *= self.reg[reg_b]
+
+        elif op == "CMP":
+            # determine whether value in register a is less than val in register b, convert to 1 if true 0 if false
+            L = int(self.reg[reg_a] < self.reg[self.operand_b])
+            # determine whether value in register a is greater than val in register b, convert to 1 if true 0 if false
+            G = int(self.reg[reg_a] > self.reg[self.operand_b])
+            # determine whether value in register a is equal to val in register b, convert to 1 if true 0 if false
+            E = int(self.reg[reg_a] == self.reg[self.operand_b])
+            # generate string of the binary value that the flag should have
+            flag_string = f'0b00000{L}{G}{E}'
+            # convert string to integer base 2 and set the flag equal to it
+            self.FL = int(flag_string, 2)
+
+            # print(f'{self.FL:08b}')
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -212,16 +226,14 @@ class CPU:
     def compare(self):
         """        
         Compare the values in two registers.
-
-        * If they are equal, set the Equal `E` flag to 1, otherwise set it to 0.
-
-        * If registerA is less than registerB, set the Less-than `L` flag to 1,
-        otherwise set it to 0.
-
-        * If registerA is greater than registerB, set the Greater-than `G` flag
-        to 1, otherwise set it to 0. 
+            - If they are equal, set the Equal `E` flag to 1, otherwise set it to 0.
+            - If registerA is less than registerB, set the Less-than `L` flag to 1,
+              otherwise set it to 0.
+            - If registerA is greater than registerB, set the Greater-than `G` flag
+              to 1, otherwise set it to 0. 
         """
-        pass   
+        # pass operand_a and operand_b to compare function in alu
+        self.alu("CMP", self.operand_a, self.operand_b)   
 
     def run(self):
         """Run the CPU."""
