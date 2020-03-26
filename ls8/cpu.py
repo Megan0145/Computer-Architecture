@@ -78,7 +78,7 @@ class CPU:
             # JGT
             0b01010111: {"function": self.jgt, "increment": False},
             # JLE
-            0b01011001: {"function": self.jle, "increment": False}
+            0b01011001: {"function": self.jle, "increment": False},
             # JLT
             0b01011000: {"function": self.jlt, "increment": False}
         }
