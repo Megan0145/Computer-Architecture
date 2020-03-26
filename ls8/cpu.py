@@ -67,6 +67,8 @@ class CPU:
             0b10101010: self.bit_or,
             # XOR
             0b10101011: self.bit_xor,
+            # NOT
+            0b01101001: self.bit_not,
 
             # PC MUTATORS:
             # CALL
@@ -160,6 +162,8 @@ class CPU:
         elif op == "BIT-XOR":
             self.reg[reg_a] = self.reg[reg_a] ^ self.reg[reg_b]    
 
+        elif op == "BIT-NOT":
+            self.reg[reg_a] = ~self.reg[reg_a]    
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -215,6 +219,9 @@ class CPU:
 
     def bit_xor(self):
         self.alu("BIT-XOR", self.operand_a, self.operand_b)    
+
+    def bit_not(self):
+        self.alu("BIT-NOT", self.operand_a)
 
     def push(self):
         # decrement value of register at index 7
