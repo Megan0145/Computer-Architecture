@@ -52,16 +52,18 @@ class CPU:
             0b01000101: {"function" : self.push, "increment": True},
             # POP
             0b01000110: {"function" : self.pop, "increment": True},
+            # ST
+            0b10000100: {"function" : self.st, "increment": True},
+            # CMP
+            0b10100111: {"function" : self.compare, "increment": True},
+
+            # PC MUTATORS:
             # CALL
             0b01010000: {"function" : self.call, "increment": False},
             # RET
             0b00010001: {"function" : self.ret, "increment": False},
             # JMP
             0b01010100: {"function" : self.jump, "increment": False},
-            # ST
-            0b10000100: {"function" : self.st, "increment": True},
-            # CMP
-            0b10100111: {"function" : self.compare, "increment": True},
             # JEQ
             0b01010101: {"function" : self.jeq, "increment": False},
             # JNE
