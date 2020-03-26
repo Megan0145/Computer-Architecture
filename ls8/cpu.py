@@ -63,7 +63,9 @@ class CPU:
             # CMP
             0b10100111: {"function" : self.compare, "increment": True},
             # JEQ
-            0b01010101: {"function" : self.jeq, "increment": False}
+            0b01010101: {"function" : self.jeq, "increment": False},
+            # JNE
+            0b01010110: {"function" : self.jne, "increment": False}
         }
 
     def ram_read(self, MAR):
@@ -238,12 +240,26 @@ class CPU:
         self.alu("CMP", self.operand_a, self.operand_b)   
 
     def jeq(self):
-        # If `equal` flag is set (true), jump to the address stored in the given register.
-        if self.FL[-3] == 1:
+        # If `equal` flag is set true, jump to the address stored in the given register.
+        # the equal falg is the last character in the 8-bit val of flag ->
+        # convert flag to string and check if last character is 1...
+        if f'{self.FL:08b}'[-1] == '1':
+            # if so jump
             self.jump()
         # else continue program    
         else:
             self.pc += 2    
+
+    def jne(self):
+        # If `equal` flag is clear, jump to the address stored in the given register.
+        # the equal falg is the last character in the 8-bit val of flag ->
+        # convert flag to string and check if last character is 0... 
+        if f'{self.FL:08b}'[-1] == '0':
+            # if so jump
+            self.jump()
+        # else continue program    
+        else:
+            self.pc += 2            
 
     def run(self):
         """Run the CPU."""
