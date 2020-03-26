@@ -42,45 +42,45 @@ class CPU:
         # and whether/not the program counter will need to be altered after the function is executed
         self.branchtable = {
             # HLT
-            0b00000001: {"function" : self.halt, "increment": False},
+            0b00000001: self.halt,
             # LDI
-            0b10000010: {"function" : self.ldi, "increment": True},
+            0b10000010: self.ldi,
             # PRN
-            0b01000111: {"function" : self.prn, "increment": True},
+            0b01000111: self.prn,
             # PRA
-            0b01001000 : {"function" : self.pra, "increment": True},
+            0b01001000: self.pra,
             # ADD 
-            0b10100000: {"function" : self.add, "increment": True},
+            0b10100000: self.add,
             # MUL
-            0b10100010: {"function" : self.mul, "increment": True},
+            0b10100010: self.mul,
             # PUSH
-            0b01000101: {"function" : self.push, "increment": True},
+            0b01000101: self.push,
             # POP
-            0b01000110: {"function" : self.pop, "increment": True},
+            0b01000110: self.pop,
             # ST
-            0b10000100: {"function" : self.st, "increment": True},
+            0b10000100: self.st,
             # CMP
-            0b10100111: {"function" : self.compare, "increment": True},
+            0b10100111: self.compare,
 
             # PC MUTATORS:
             # CALL
-            0b01010000: {"function" : self.call, "increment": False},
+            0b01010000: self.call,
             # RET
-            0b00010001: {"function" : self.ret, "increment": False},
+            0b00010001: self.ret,
             # JMP
-            0b01010100: {"function" : self.jump, "increment": False},
+            0b01010100: self.jump,
             # JEQ
-            0b01010101: {"function" : self.jeq, "increment": False},
+            0b01010101: self.jeq,
             # JNE
-            0b01010110: {"function" : self.jne, "increment": False},
+            0b01010110: self.jne,
             # JGE
-            0b01011010: {"function" : self.jge, "increment": False},
+            0b01011010: self.jge,
             # JGT
-            0b01010111: {"function": self.jgt, "increment": False},
+            0b01010111: self.jgt,
             # JLE
-            0b01011001: {"function": self.jle, "increment": False},
+            0b01011001: self.jle,
             # JLT
-            0b01011000: {"function": self.jlt, "increment": False}
+            0b01011000: self.jlt
         }
 
     def ram_read(self, MAR):
@@ -339,9 +339,9 @@ class CPU:
             self.operand_b = self.ram_read(self.pc + 2)
 
             # execute the function within the branchtable at the index of IR
-            self.branchtable[IR]["function"]()   
+            self.branchtable[IR]()   
 
             # if the program counter needs to be altered..
-            if self.branchtable[IR]["increment"] is True:
+            if (IR & 0b00010000) >> 4 != 0b00000001:
                 # increment by the value of the first two digits in IR + 1
                 self.pc += (IR >> 6) + 0b00000001
