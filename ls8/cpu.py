@@ -39,6 +39,8 @@ class CPU:
             0b10000010: {"function" : self.ldi, "increment": True},
             # PRN
             0b01000111: {"function" : self.prn, "increment": True},
+            # PRA
+            0b01001000 : {"function" : self.pra, "increment": True}
             # ADD 
             0b10100000: {"function" : self.add, "increment": True},
             # MUL
@@ -52,7 +54,7 @@ class CPU:
             # RET
             0b00010001: {"function" : self.ret, "increment": False},
             # JMP
-            0b01010100: {"function" : self.jump, "increment": True},
+            0b01010100: {"function" : self.jump, "increment": False},
             # ST
             0b10000100: {"function" : self.st, "increment": True}
         }
@@ -141,6 +143,10 @@ class CPU:
         # print value of register at index of operand_a
         print(self.reg[self.operand_a])
 
+    def pra(self):
+        # print ASCII value of register at index of operand_a
+        print(chr(self.reg[self.operand_a]))
+        
     def mul(self):
         # pass operand_a and operand_b in alu method with "MUL" as the opcode
         self.alu("MUL", self.operand_a, self.operand_b)
@@ -187,7 +193,7 @@ class CPU:
 
     def jump(self):
         # set the value of pc equal to the value of register at index of operand_a minus 2 (run function will add 2 when function finished executing)
-        self.pc = (self.reg[self.operand_a]) - 2    
+        self.pc = (self.reg[self.operand_a])    
 
     def st(self):
         # Store value in registerB in the address stored in registerA.
