@@ -170,20 +170,23 @@ class CPU:
         self.reg[7] += 0x1
 
     def call(self):
-        # # push current value of pc to stack
-        # self.reg[7] -= 0x1
-        # self.sp = self.reg[7]
-        # self.ram_write(self.sp, self.pc)
-        
-        # # set the pc equal to the value in register at index of operand_a
-        # print(self.ram[self.reg[self.operand_a]] == 0b10100000)
-
-        # # print(f'r1: {self.reg[1]}')
-        # # print(self.reg[self.operand_a])
-        pass
+        # push current value of pc + 2 to stack, 
+        # this will be the value that the program counter should be after executing subroutine
+        self.reg[7] -= 0x1
+        self.sp = self.reg[7]
+        self.ram_write(self.sp, (self.pc + 2))        
+        # set the pc equal to the value in register at index of operand_a - 2
+        # (has to be minus 2 because the run function itself will add 2 to program counter after it executes call function)
+        self.pc = (self.reg[self.operand_a]) - 2
 
     def ret(self):
-        print('BLA')
+        # grab the value from top of stack
+        self.sp = self.reg[7]
+        val = self.ram_read(self.sp)
+        # set the program counter equal to the value minus one (because run function will add 1 to pc after ret is finished executing)
+        self.pc = val - 1
+        # increment sp
+        self.reg[7] += 0x1
 
     def run(self):
         """Run the CPU."""
