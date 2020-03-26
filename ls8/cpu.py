@@ -61,7 +61,9 @@ class CPU:
             # ST
             0b10000100: {"function" : self.st, "increment": True},
             # CMP
-            0b10100111: {"function" : self.compare, "increment": True}
+            0b10100111: {"function" : self.compare, "increment": True},
+            # JEQ
+            0b01010101: {"function" : self.jeq, "increment": False}
         }
 
     def ram_read(self, MAR):
@@ -234,6 +236,14 @@ class CPU:
         """
         # pass operand_a and operand_b to compare function in alu
         self.alu("CMP", self.operand_a, self.operand_b)   
+
+    def jeq(self):
+        # If `equal` flag is set (true), jump to the address stored in the given register.
+        if self.FL[-3] == 1:
+            self.jump()
+        # else continue program    
+        else:
+            self.pc += 2    
 
     def run(self):
         """Run the CPU."""
