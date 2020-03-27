@@ -1,0 +1,32 @@
+10000010 # LDI R0, 5
+00000000
+00000101
+10000010 # LDI R1, 2
+00000001
+00000010
+10100100 # MOD R0, R1 
+00000000
+00000001
+01000111 # PRN R0 (should print 5 % 2 = 1)
+00000000
+10000010 # LDI R0, 4
+00000000
+00000100
+10100100 # MOD R0, R1 
+00000000
+00000001
+01000111 # PRN R0 (should print 4 % 2 = 0)
+00000000
+10000010 # LDI R1, 0
+00000001
+00000000
+10100100 # MOD R0, R1 (this should result in the program halting because r1 now contains 0)
+00000000
+00000001
+01000111 # PRN R0 (should not print anything -> program should've halted on previous instruction)
+00000000
+00000000 # HLT
+
+# EXPECTED OUTPUT:
+# 1
+# 0
