@@ -171,13 +171,11 @@ class CPU:
 
         elif op == "BIT-SHL":
             num_bits = self.reg[reg_b]
-            self.reg[reg_a] = self.reg[reg_a] << num_bits
-            print(f'{self.reg[reg_a]} : {self.reg[reg_a]:08b}')   
+            self.reg[reg_a] = self.reg[reg_a] << num_bits   
 
         elif op == "BIT-SHR":
             num_bits = self.reg[reg_b]
             self.reg[reg_a] = self.reg[reg_a] >> num_bits
-            print(f'{self.reg[reg_a]} : {self.reg[reg_a]:08b}')  
 
         else:
             raise Exception("Unsupported ALU operation")
