@@ -319,9 +319,9 @@ class CPU:
 
     def jeq(self):
         # If `equal` flag is set true, jump to the address stored in the given register.
-        # the equal falg is the last character in the 8-bit val of flag ->
-        # convert flag to string and check if last character is 1...
-        if f'{self.FL:08b}'[-1] == '1':
+        # the equal flag is the last bit in the 8-bit val of flag ->
+        # the last bit has to be a 1
+        if self.FL == 0b00000001:
             # if so jump
             self.jump()
         # else continue program    
