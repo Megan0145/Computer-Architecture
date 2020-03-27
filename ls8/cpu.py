@@ -341,11 +341,9 @@ class CPU:
 
     def jge(self):
         # If `greater-than` flag or `equal` flag is set (true), jump to the address stored in the given register.
-        # get 8-bit string of flag
-        flag_str = f'{self.FL:08b}'
-        # the greater-than flag will be the second last value of the flag_str and the equal flag will be the last value of the flag_str ->
-        # check if last or second-last character in flag_str is 1...
-        if flag_str[-2] or flag_str[-1] == '1':
+        # the greater-than flag is the second last bit of the flag and the equal flag is the last bit of the flag ->
+        # check if last or second-last bit in flag is 1...
+        if self.FL == 0b00000010 or self.FL == 0b00000001:
             # if so, jump
             self.jump()
         # else continue program    
