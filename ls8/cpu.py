@@ -178,6 +178,7 @@ class CPU:
         elif op == "BIT-SHR":
             num_bits = self.reg[reg_b]
             self.reg[reg_a] = self.reg[reg_a] >> num_bits
+
         elif op == "MOD":
             if self.reg[reg_a] != 0:
                 self.reg[reg_a] = self.reg[reg_a] % self.reg[reg_b]
@@ -329,9 +330,9 @@ class CPU:
 
     def jne(self):
         # If `equal` flag is clear, jump to the address stored in the given register.
-        # the equal falg is the last character in the 8-bit val of flag ->
-        # convert flag to string and check if last character is 0... 
-        if f'{self.FL:08b}'[-1] == '0':
+        # the equal flag is the last bit in the 8-bit val of flag ->
+        # the last bit cannot be a 1
+        if self.FL != 0b00000001:
             # if so jump
             self.jump()
         # else continue program    
