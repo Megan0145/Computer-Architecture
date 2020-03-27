@@ -73,6 +73,8 @@ class CPU:
             0b10101100 : self.bit_shl,
             # SHR
             0b10101101: self.bit_shr,
+            # MOD
+            0b10100100: self.mod,
 
             # PC MUTATORS:
             # CALL
@@ -176,7 +178,11 @@ class CPU:
         elif op == "BIT-SHR":
             num_bits = self.reg[reg_b]
             self.reg[reg_a] = self.reg[reg_a] >> num_bits
-
+        elif op == "MOD":
+            if self.reg[reg_a] != 0:
+                self.reg[reg_a] = self.reg[reg_a] % self.reg[reg_b]
+            else:
+                self.halt()    
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -243,6 +249,11 @@ class CPU:
     def bit_shr(self):
         # Shift the value in registerA right by the number of bits specified in registerB, filling the high bits with 0.
         self.alu("BIT-SHR", self.operand_a, self.operand_b)    
+    
+    def mod(self):
+        # Divide the value in the first register by the value in the second,
+        # storing the _remainder_ of the result in registerA.
+        self.alu("MOD", self.operand_a, self.operand_b)   
     
     def push(self):
         # decrement value of register at index 7
