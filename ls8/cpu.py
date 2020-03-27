@@ -6,7 +6,7 @@ class CPU:
     """Main CPU class."""
 
     def __init__(self):
-        """Construct a new CPU."""
+        """Construct a new CPU."""    
         
         # add ram to hold 256 bytes of memory
         self.ram = [0] * 256
@@ -293,7 +293,7 @@ class CPU:
         self.reg[7] += 0x1
 
     def jump(self):
-        # set the value of pc equal to the value of register at index of operand_a minus 2 (run function will add 2 when function finished executing)
+        # set the value of pc equal to the value of register at index of operand_a 
         self.pc = (self.reg[self.operand_a])    
 
     def st(self):
